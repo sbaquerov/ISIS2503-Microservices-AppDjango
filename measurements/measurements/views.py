@@ -16,6 +16,14 @@ def check_variable(data):
             return True
     return False
 
+def get_place_id(data):
+    r = requests.get(settings.PATH_PLACES, headers={"Accept":"application/json"})
+    places = r.json()
+    for place in places:
+        if data["place"] == place["name"]:
+            return place["id"]
+    return -1
+
 def MeasurementList(request):
     queryset = Measurement.objects.all()
     context = list(queryset.values('id', 'variable', 'value', 'unit', 'place', 'dateTime'))
@@ -25,16 +33,17 @@ def MeasurementCreate(request):
     if request.method == 'POST':
         data = request.body.decode('utf-8')
         data_json = json.loads(data)
-        if check_variable(data_json) == True:
+        place_id = get_place_id(data_json)
+        if check_variable(data_json) and place_id != -1:
             measurement = Measurement()
             measurement.variable = data_json['variable']
             measurement.value = data_json['value']
             measurement.unit = data_json['unit']
-            measurement.place = data_json['place']
+            measurement.place = place_id
             measurement.save()
             return HttpResponse("successfully created measurement")
         else:
-            return HttpResponse("unsuccessfully created measurement. Variable does not exist")
+            return HttpResponse("unsuccessfully created measurement. Variable or place does not exist")
 
 def MeasurementsCreate(request):
     if request.method == 'POST':
@@ -42,15 +51,16 @@ def MeasurementsCreate(request):
         data_json = json.loads(data)
         measurement_list = []
         for measurement in data_json:
-                    if check_variable(measurement) == True:
+                    place_id = get_place_id(measurement)
+                    if check_variable(measurement) == True and place_id != -1:
                         db_measurement = Measurement()
                         db_measurement.variable = measurement['variable']
                         db_measurement.value = measurement['value']
                         db_measurement.unit = measurement['unit']
-                        db_measurement.place = measurement['place']
+                        db_measurement.place = place_id
                         measurement_list.append(db_measurement)
                     else:
-                        return HttpResponse("unsuccessfully created measurement. Variable does not exist")
+                        return HttpResponse("unsuccessfully created measurement. Variable or place does not exist")
         
         Measurement.objects.bulk_create(measurement_list)
         return HttpResponse("successfully created measurements")
