@@ -33,7 +33,7 @@ def MeasurementCreate(request):
     if request.method == 'POST':
         data = request.body.decode('utf-8')
         data_json = json.loads(data)
-        if check_variable(data_json) and place_id != -1:
+        if check_variable(data_json):
             measurement = Measurement()
             measurement.variable = data_json['variable']
             measurement.value = data_json['value']
