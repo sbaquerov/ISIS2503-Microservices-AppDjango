@@ -55,7 +55,7 @@ def MeasurementsCreate(request):
                         db_measurement.variable = measurement['variable']
                         db_measurement.value = measurement['value']
                         db_measurement.unit = measurement['unit']
-                        db_measurement.place = data_json['place']
+                        db_measurement.place = measurement['place']
                         measurement_list.append(db_measurement)
                     else:
                         return HttpResponse("unsuccessfully created measurement. Variable or place does not exist")
