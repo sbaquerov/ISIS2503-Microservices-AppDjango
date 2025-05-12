@@ -128,9 +128,6 @@ resources:
     networkInterfaces:
     - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
       networkIP: 10.128.0.82
-      accessConfigs:
-      - name: External NAT
-        type: ONE_TO_ONE_NAT
     tags:
       items: 
       - msd-service-db
@@ -156,9 +153,6 @@ resources:
     networkInterfaces:
     - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
       networkIP: 10.128.0.83
-      accessConfigs:
-      - name: External NAT
-        type: ONE_TO_ONE_NAT
     tags:
       items: 
       - msd-service-db
