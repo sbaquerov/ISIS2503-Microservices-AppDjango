@@ -9,6 +9,9 @@
 #    - msd-services-apps
 #    - msd-services-apps-web
 #    - msd-service-db
+# 2. Router y NAT:
+#    - msd-router
+#    - msd-nat
 # 2. Instancias MVs:
 #    - msd-kong-instance
 #    - msd-variables-db (postgreSQL instalado y configurado)
@@ -74,6 +77,17 @@ resources:
     - IPProtocol: TCP
       ports: 
       - 5432
+
+# Router y NAT
+- name: msd-router
+  type: compute.v1.router
+  properties:
+    region: us-central1
+    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    nats:
+    - name: msd-nat
+      natIpAllocateOption: AUTO_ONLY
+      sourceSubnetworkIpRangesToNat: ALL_SUBNETWORKS_ALL_IP_RANGES
 
 # Kong instance
 - name: msd-kong-instance
